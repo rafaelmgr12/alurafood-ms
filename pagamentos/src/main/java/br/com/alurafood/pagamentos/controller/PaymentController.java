@@ -40,6 +40,17 @@ public class PaymentController {
         return ResponseEntity.created(address).body(payment);
     }
 
+    @PutMapping
+    public ResponseEntity<PaymentDto> updatePayment(@PathVariable @NotNull Long id ,@RequestBody @Valid PaymentDto dto){
+        PaymentDto payment = service.updatePayment(id, dto);
+        return ResponseEntity.ok(payment);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePayment(@PathVariable @NotNull Long id){
+        service.deletePayment(id);
+        return ResponseEntity.noContent().build();
+    }
 
 
 }
