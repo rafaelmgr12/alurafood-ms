@@ -2,6 +2,7 @@ package br.com.alurafood.pagamentos.controller;
 
 import br.com.alurafood.pagamentos.dto.PaymentDto;
 import br.com.alurafood.pagamentos.service.PaymentService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,6 +51,16 @@ public class PaymentController {
     public ResponseEntity<?> deletePayment(@PathVariable @NotNull Long id){
         service.deletePayment(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}")
+    @CircuitBreaker(name = "atualizaPedido", fallbackMethod = "pagamentoAutorizadoComIntegracaoPendente")
+    public void confirmPayment(@PathVariable @NotNull Long id){
+        service.confirmPayment(id);
+    }
+
+    public void changeStatusToAuthorizedWithPendingIntegration(Long id){
+        service.changeStatus(id);
     }
 
 
